@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2012, 2013, 2014, 2015 CERN.
+# Copyright (C) 2015 CERN.
 #
 # Invenio is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -21,12 +21,35 @@
 # granted to it by virtue of its status as an Intergovernmental Organization or
 # submit itself to any jurisdiction.
 
-"""Version information for Invenio-Base.
+"""Pytest configuration."""
 
-This file is imported by ``invenio_base.__init__``, and parsed by
-``setup.py`` as well as ``docs/conf.py``.
-"""
+from __future__ import absolute_import, print_function, unicode_literals
 
-from __future__ import absolute_import, print_function
+import pytest
 
-__version__ = "1.0.0.dev20151002"
+from invenio_base.app import create_app
+from invenio_base.celery import create_celery
+
+
+@pytest.fixture
+def app():
+    """Application fixture."""
+    return create_app(
+        CELERY_ALWAYS_EAGER=True,
+        CELERY_RESULT_BACKEND="cache",
+        CELERY_CACHE_BACKEND="memory",
+        CELERY_EAGER_PROPAGATES_EXCEPTIONS=True,
+        TESTING=True,
+    )
+
+
+@pytest.fixture
+def celery():
+    """Application fixture."""
+    return create_celery(
+        CELERY_ALWAYS_EAGER=True,
+        CELERY_RESULT_BACKEND="cache",
+        CELERY_CACHE_BACKEND="memory",
+        CELERY_EAGER_PROPAGATES_EXCEPTIONS=True,
+        TESTING=True,
+    )

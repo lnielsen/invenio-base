@@ -22,6 +22,9 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
--e git+https://github.com/mitsuhiko/flask.git#egg=Flask
--e git+https://github.com/inveniosoftware/flask-cli.git#egg=Flask-CLI
--e git+https://github.com/inveniosoftware/flask-celeryext.git#egg=Flask-CeleryExt
+pep257 invenio_base && \
+isort -rc -c **/*.py && \
+check-manifest && \
+sphinx-build -qnNW docs docs/_build/html && \
+python setup.py test && \
+sphinx-build -qnNW -b doctest docs docs/_build/doctest

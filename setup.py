@@ -27,32 +27,11 @@
 import os
 import sys
 
-from setuptools import setup
+from setuptools import find_packages, setup
 from setuptools.command.test import test as TestCommand
 
 readme = open('README.rst').read()
 history = open('CHANGES.rst').read()
-
-requirements = [
-    'Flask>=0.10.1',
-    'Flask-Babel>=0.9',
-    'Flask-Registry>=0.2',
-    'six>=1.7.2',
-]
-
-test_requirements = [
-    'Flask-Testing>=0.4.1',
-    'coverage>=4.0.0',
-    'httpretty>=0.8.10',
-    'invenio-ext>=0.2.1',
-    'invenio-testing>=0.1.1',
-    'invenio-utils>=0.1.1',
-    'mock>=1.0.0',
-    'pytest-cov>=2.1.0',
-    'pytest-pep8>=1.0.6',
-    'pytest>=2.8.0',
-    'unittest2>=0.5',
-]
 
 
 class PyTest(TestCommand):
@@ -92,6 +71,47 @@ with open(os.path.join('invenio_base', 'version.py'), 'rt') as fp:
     exec(fp.read(), g)
     version = g['__version__']
 
+
+tests_require = [
+    'check-manifest>=0.25',
+    'coverage>=4.0',
+    'isort>=4.2.2',
+    'pytest-cache>=1.0',
+    'pytest-cov>=1.8.0',
+    'pytest-pep8>=1.0.6',
+    'pytest>=2.8.0',
+]
+
+
+extras_require = {
+    'docs': [
+        "Sphinx>=1.3",
+    ],
+    'tests': tests_require,
+}
+
+extras_require['all'] = []
+for reqs in extras_require.values():
+    extras_require['all'].extend(reqs)
+
+setup_requires = [
+    'Babel>=1.3',
+]
+
+install_requires = [
+    'Flask-CLI>=0.2.1',
+    'Flask>=0.10',
+]
+
+install_requires += [
+    "invenio-celery>=0.1.0.dev20150000",
+    "invenio-assets>=0.1.0.dev20150000",
+    "invenio-config>=0.1.0.dev20150000",
+    "invenio-theme>=0.1.0.dev20150000",
+]
+
+packages = find_packages()
+
 setup(
     name='invenio-base',
     version=version,
@@ -102,28 +122,19 @@ setup(
     author='CERN',
     author_email='info@invenio-software.org',
     url='https://github.com/inveniosoftware/invenio-base',
-    packages=[
-        'invenio_base',
-    ],
+    packages=packages,
     zip_safe=False,
     include_package_data=True,
     platforms='any',
     entry_points={
         'console_scripts': [
-            'inveniomanage = invenio_base.manage:main',
+            'inveniomanage = invenio_base.cli:cli',
         ],
-        "distutils.commands": [
-            "inveniomanage = invenio_base.setuptools:InvenioManageCommand",
-        ]
     },
-    install_requires=requirements,
-    extras_require={
-        'docs': [
-            'Sphinx>=1.3',
-            'sphinx_rtd_theme>=0.1.7'
-        ],
-        'tests': test_requirements
-    },
+    extras_require=extras_require,
+    install_requires=install_requires,
+    setup_requires=setup_requires,
+    tests_require=tests_require,
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
@@ -133,13 +144,12 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Programming Language :: Python :: 2',
-        # 'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
-        # 'Programming Language :: Python :: 3',
-        # 'Programming Language :: Python :: 3.3',
-        # 'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Development Status :: 1 - Planning',
     ],
-    tests_require=test_requirements,
     cmdclass={'test': PyTest},
 )

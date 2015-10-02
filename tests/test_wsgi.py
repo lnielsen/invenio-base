@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2012, 2013, 2014, 2015 CERN.
+# Copyright (C) 2015 CERN.
 #
 # Invenio is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -21,12 +21,20 @@
 # granted to it by virtue of its status as an Intergovernmental Organization or
 # submit itself to any jurisdiction.
 
-"""Version information for Invenio-Base.
+"""Test wsgi application."""
 
-This file is imported by ``invenio_base.__init__``, and parsed by
-``setup.py`` as well as ``docs/conf.py``.
-"""
+from __future__ import absolute_import, print_function, unicode_literals
 
-from __future__ import absolute_import, print_function
+from werkzeug.test import create_environ
 
-__version__ = "1.0.0.dev20151002"
+from invenio_base.wsgi import application
+
+
+def test_index():
+    """Test index."""
+    environ = create_environ('/', 'http://127.0.0.1:5000')
+
+    def start_response(*args, **kwargs):
+        pass
+
+    application(environ, start_response)
